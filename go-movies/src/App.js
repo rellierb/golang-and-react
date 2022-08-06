@@ -1,8 +1,10 @@
 import React, {Component, Fragment} from 'react';
-import { HashRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Link, useParams, useRouteMatch } from 'react-router-dom';
 import Movies from './components/Movies';
 import Home from './components/Home';
 import Admin from './components/Admin';
+import Categories from './components/Categories';
+import OneMovie from './components/OneMovie';
 
 export default function App() {
   return (
@@ -25,6 +27,9 @@ export default function App() {
                   <Link to="/movies">Movies</Link>
                 </li>
                 <li className="list-group-item">
+                  <Link to="/by-category">By Category</Link>
+                </li>
+                <li className="list-group-item">
                   <Link to="/admin">Manage Catalogue</Link>
                 </li>
               </ul>
@@ -33,9 +38,22 @@ export default function App() {
           <div className="col-md-10">
 
             <Switch>
-              <Route path="/" exact component={Home} />
+              <Route path="/movies/:id" exact component={OneMovie} />
+              <Route exact path="/" component={Home} />
               <Route path="/movies" component={Movies} />
               <Route path="/admin" component={Admin} />
+              <Route exact path="/by-category" component={CategoryPage} />
+              <Route 
+                exact 
+                path="/by-category/drama" 
+                render={(props) => <Categories {...props} title={`Drama`}/>} 
+              />
+              <Route 
+                exact 
+                path="/by-category/comedy" 
+                render={(props) => <Categories {...props} title={`Comedy`}/>} 
+              />
+            
             </Switch>
 
           </div>
@@ -48,4 +66,26 @@ export default function App() {
   );
 }
 
+
+function Movie() {
+  let { id } = useParams();
+
+  return <h2>Movie id {id}</h2>;
+}
+
+function CategoryPage() {
+  
+  let { path, url } = useRouteMatch();
+
+  return (
+    <div>
+      <h2>Categories</h2>
+
+      <ul>
+        <li><Link to={`${url}/comedy`}>Comedy</Link></li>
+        <li><Link to={`${path}/drama`}>Drama</Link></li>
+      </ul>
+    </div>
+  );
+}
 
