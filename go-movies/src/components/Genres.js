@@ -46,6 +46,7 @@ export default class Genres extends Component {
       return (
         <Fragment>
           <h2>Genres</h2>
+          <h2>Just to make the green commit</h2>
   
           <div className="list-group">
             {genres.map((m) => (
