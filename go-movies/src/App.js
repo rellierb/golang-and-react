@@ -6,6 +6,7 @@ import Admin from './components/Admin';
 import OneMovie from './components/OneMovie';
 import Genres from './components/Genres';
 import OneGenre from './components/OneGenre';
+import EditMovie from './components/EditMovie';
 
 export default function App() {
   return (
@@ -15,7 +16,6 @@ export default function App() {
           <h1 className="mt-3">Go Watch a Movie!</h1>
           <hr className="mb-3"></hr>
         </div>
-
 
         <div className="row">
           <div className="col-md-2">
@@ -30,8 +30,12 @@ export default function App() {
                 <li className="list-group-item">
                   <Link to="/genres">Genres</Link>
                 </li>
+                
                 <li className="list-group-item">
                   <Link to="/admin">Manage Catalogue</Link>
+                </li>
+                <li className="list-group-item">
+                  <Link to="/admin/add">Add movie</Link>
                 </li>
               </ul>
             </nav>
@@ -42,7 +46,9 @@ export default function App() {
               <Route path="/movies/:id" exact component={OneMovie} />
               <Route exact path="/" component={Home} />
               <Route path="/movies" component={Movies} />
+              <Route exact path="/admin/add" component={EditMovie} />
               <Route path="/admin" component={Admin} />
+              
               <Route exact path="/genres" component={Genres} />            
 
               <Route path="/genre/:id" exact component={OneGenre} />
