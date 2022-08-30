@@ -10,22 +10,32 @@ import EditMovie from './components/EditMovie';
 import Login from "./components/Login";
 
 export default class App extends Component {
-  
 
   constructor(props) {
     super(props);
     this.state = {
       jwt: "",
-    }
+    };
     this.handleJWTChange(this.handleJWTChange.bind(this));
+    
+  }
+
+  componentDidMount() {
+    let t = window.localStorage.getItem("jwt");
+    if (t) {
+      if (this.state.jwt === "") {
+        this.setState({jwt: JSON.parse(t)})
+      } 
+    }
   }
 
   handleJWTChange = (jwt) => {
     this.setState({jwt: jwt});
   }
-
+  
   logout = () => {
     this.setState({jwt: ""});
+    window.localStorage.removeItem("jwt");
   }
 
   render() {
@@ -35,7 +45,6 @@ export default class App extends Component {
       loginLink = <Link to="/login">Login</Link>
     } else {
       loginLink = <Link to="/logout" onClick={this.logout}>Logout</Link>
-
     }
 
     return (
@@ -65,16 +74,16 @@ export default class App extends Component {
                     <Link to="/genres">Genres</Link>
                   </li>
                   
-                  {this.state.jwt !== "" &&
+                  {this.state.jwt !== "" && (
                     <Fragment>
-                      <li className="list-group-item">
-                        <Link to="/admin">Manage Catalogue</Link>
-                      </li>
                       <li className="list-group-item">
                         <Link to="/admin/movie/0">Add movie</Link>
                       </li>
+                      <li className="list-group-item">
+                        <Link to="/admin">Manage Catalogue</Link>
+                      </li>
                     </Fragment>
-                  }
+                  )}
                 
                 </ul>
                 <pre>
@@ -86,15 +95,27 @@ export default class App extends Component {
   
               <Switch>
                 <Route path="/movies/:id" exact component={OneMovie} />
-                <Route exact path="/" component={Home} />
                 <Route path="/movies" component={Movies} />
-                <Route exact path="/admin/movie/:id" component={EditMovie} />
-                <Route path="/admin" component={Admin} />
-                <Route exact path="/genres" component={Genres} />            
+                
                 <Route path="/genre/:id" exact component={OneGenre} />
-                <Route path="/login" 
+                <Route exact path="/login" 
                   component={(props) => <Login {...props} handleJWTChange={this.handleJWTChange} />} 
                 />
+                <Route exact path="/genres" component={Genres} />  
+                <Route path="/admin/movies/:id" component={(props) => (
+                  <EditMovie {...props} jwt={this.state.jwt} />
+                )} 
+                />
+               
+                <Route 
+                  path="/admin"
+                  component={(props) => (
+                    <Admin {...props} jwt={this.state.jwt}/>
+                  )}
+                />
+                          
+                <Route exact path="/" component={Home} />
+               
               </Switch>
   
             </div>

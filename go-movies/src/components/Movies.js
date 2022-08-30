@@ -51,6 +51,7 @@ export default class Movies extends Component {
               {movies.map(m => (
                 
                 <Link
+                  key={m.id}
                   className="list-group-item list-group-item-action" 
                   to={`/movies/${m.id}`} >
                   {m.title}
