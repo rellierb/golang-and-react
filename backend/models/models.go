@@ -28,8 +28,9 @@ type Movie struct {
 	Rating      int            `json:"rating"`
 	MPAARating  string         `json:"mpaa_rating"`
 	CreatedAt   time.Time      `json:"created_at"`
-	UpdatedAt   time.Time      `json:"-"`
+	UpdatedAt   time.Time      `json:"updated_at"`
 	MovieGenre  map[int]string `json:"genre"`
+	Poster      string         `json:"poster"`
 }
 
 // Genre is the type for genre

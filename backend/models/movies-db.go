@@ -17,8 +17,7 @@ func (m *DBModel) Get(id int) (*Movie, error) {
 	defer cancel()
 
 	query := `select id, title, description, year, release_date, rating, runtime, mpaa_rating,
-						created_at, updated_at from movies where id = $1
-	
+						created_at, updated_at, coalesce(poster, '') from movies where id = $1
 	`
 
 	row := m.DB.QueryRowContext(ctx, query, id)
@@ -35,6 +34,7 @@ func (m *DBModel) Get(id int) (*Movie, error) {
 		&movie.MPAARating,
 		&movie.CreatedAt,
 		&movie.UpdatedAt,
+		&movie.Poster,
 	)
 
 	if err != nil {
@@ -88,7 +88,7 @@ func (m *DBModel) All(genre ...int) ([]*Movie, error) {
 	}
 
 	query := fmt.Sprintf(`select id, title, description, year, release_date, rating, runtime, mpaa_rating,
-	created_at, updated_at from movies %s order by title`, where)
+	created_at, updated_at, coalesce(poster, '') from movies %s order by title`, where)
 
 	rows, err := m.DB.QueryContext(ctx, query)
 	if err != nil {
@@ -112,6 +112,7 @@ func (m *DBModel) All(genre ...int) ([]*Movie, error) {
 			&movie.MPAARating,
 			&movie.CreatedAt,
 			&movie.UpdatedAt,
+			&movie.Poster,
 		)
 		if err != nil {
 			return nil, err
@@ -195,7 +196,7 @@ func (m *DBModel) InsertMovie(movie Movie) error {
 
 	stmt := `
 		insert into movies (title, description, year, release_date, runtime, rating, mpaa_rating,
-			created_at, updated_at) values ($1, $2, $3, $4, $5, $6, $7, $8, $9)	
+			created_at, updated_at, poster) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)	
 	`
 
 	_, err := m.DB.ExecContext(ctx, stmt,
@@ -208,6 +209,7 @@ func (m *DBModel) InsertMovie(movie Movie) error {
 		movie.MPAARating,
 		movie.CreatedAt,
 		movie.UpdatedAt,
+		movie.Poster,
 	)
 
 	if err != nil {
@@ -232,8 +234,9 @@ func (m *DBModel) UpdateMovie(movie Movie) error {
 			runtime = $5, 
 			rating = $6, 
 			mpaa_rating = $7,
-			updated_at = $8
-			where id = $9	
+			updated_at = $8,
+			poster = $9
+			where id = $10	
 	`
 
 	_, err := m.DB.ExecContext(ctx, stmt,
@@ -245,6 +248,7 @@ func (m *DBModel) UpdateMovie(movie Movie) error {
 		movie.Rating,
 		movie.MPAARating,
 		movie.UpdatedAt,
+		movie.Poster,
 		movie.ID,
 	)
 
